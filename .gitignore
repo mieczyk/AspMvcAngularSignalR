@@ -1,0 +1,11 @@
+[Oo]bj/
+[Bb]in/
+logs/
+_ReSharper.*
+packages/
+*.user
+*.suo
+*.userprefs
+*DS_Store
+*.sln.ide
+.vs
