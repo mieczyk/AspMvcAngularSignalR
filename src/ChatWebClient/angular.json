@@ -1,0 +1,130 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "chat-web-client-ng7": {
+      "root": "",
+      "sourceRoot": "chat-web-client-ng7",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:component": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:module": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "Scripts/libs",
+            "index": "chat-web-client-ng7/index.html",
+            "main": "chat-web-client-ng7/main.ts",
+            "polyfills": "chat-web-client-ng7/polyfills.ts",
+            "tsConfig": "chat-web-client-ng7/tsconfig.app.json",
+            "assets": [
+              "chat-web-client-ng7/favicon.ico",
+              "chat-web-client-ng7/assets"
+            ],
+            "styles": [
+              "chat-web-client-ng7/styles.css"
+            ],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "chat-web-client-ng7/environments/environment.ts",
+                  "with": "chat-web-client-ng7/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "chat-web-client-ng7:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "chat-web-client-ng7:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "chat-web-client-ng7:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "chat-web-client-ng7/test.ts",
+            "polyfills": "chat-web-client-ng7/polyfills.ts",
+            "tsConfig": "chat-web-client-ng7/tsconfig.spec.json",
+            "karmaConfig": "chat-web-client-ng7/karma.conf.js",
+            "styles": [
+              "chat-web-client-ng7/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "chat-web-client-ng7/favicon.ico",
+              "chat-web-client-ng7/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "chat-web-client-ng7/tsconfig.app.json",
+              "chat-web-client-ng7/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "chat-web-client-ng7"
+}

@@ -9,3 +9,7 @@ packages/
 *DS_Store
 *.sln.ide
 .vs
+
+# Angular 7
+node_modules
+out-tsc/

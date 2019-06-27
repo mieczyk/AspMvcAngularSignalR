@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
 
@@ -10,7 +9,7 @@ namespace ChatWebClient.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return Content("Chat Web Client");
+            return View();
         }
 
         [HttpPost]
