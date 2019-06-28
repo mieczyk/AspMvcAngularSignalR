@@ -12,4 +12,4 @@
 * Można użyć browserify (post-build event) do utworzenia jednego pliku bundle.js, który będzie includowany w widoku.
 * remove-node-modules (npm package)
 *  ng new chat-web-client-ng7 --minimal --skip-tests --skip-git
-* run the command ng build –watch to compile Angular code automatically
+* run the command `ng build –watch` to compile Angular code automatically. The compiler runs in background and listens for changes in code.

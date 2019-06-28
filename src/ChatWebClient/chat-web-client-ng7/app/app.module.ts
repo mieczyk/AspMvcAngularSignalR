@@ -1,16 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppComponent } from './app.component';
+import { ChatWindow } from './chat-window.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    ChatWindow
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [ChatWindow]
 })
 export class AppModule { }

@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="chat-web-client-ng7\app\chat-window.component.html" />
     <Content Include="chat-web-client-ng7\favicon.ico" />
     <Content Include="chat-web-client-ng7\index.html" />
     <Content Include="chat-web-client-ng7\styles.css" />
@@ -165,8 +166,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="chat-web-client-ng7\app\app.component.ts" />
+    <TypeScriptCompile Include="chat-web-client-ng7\app\chat-window.component.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\app\app.module.ts" />
+    <TypeScriptCompile Include="chat-web-client-ng7\app\models\message.model.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\environments\environment.prod.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\environments\environment.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\main.ts" />
