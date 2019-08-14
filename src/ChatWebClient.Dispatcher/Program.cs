@@ -33,7 +33,7 @@ namespace ChatWebClient.Dispatcher
                     IEnumerable<string> messages = 
                         chatServer.ReadAllMessagesForClient(MvcApplication.ClientId);
 
-                    PostMessagesToClient($"{webClientUri}/Chat/Messages", messages).Wait();
+                    PostMessagesToClient($"{webClientUri}/Chat/Messages", messages).GetAwaiter().GetResult();
 
                     Console.WriteLine("[*] Posted {0} messages to the web client.", messages.Count());
 
