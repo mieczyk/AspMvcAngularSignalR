@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SignalR, BroadcastEventListener } from 'ng2-signalr';
 
 import { Message } from './models/message.model';
 
@@ -8,13 +9,28 @@ import { Message } from './models/message.model';
   styles: []
 })
 export class ChatWindow {
-    messages: Message[];
+    private messages: Message[];
+
+    constructor(private _signalR: SignalR) { }
 
     ngOnInit() {
-        this.messages = [
-            new Message('Bolek', 'Hello world'),
-            new Message('Someone', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'),
-            new Message('Lolek', 'Hi Bolek!'),
-        ];
+        this.messages = [];
+        this._signalR.connect().then((connection) => {
+            let onMessagesReceived = new BroadcastEventListener<string>('onMessagesReceived');
+
+            connection.listen(onMessagesReceived);
+            onMessagesReceived.subscribe((messagesJson: string) => {
+                this.updateChatWindow(messagesJson);
+            });
+        });
+    }
+
+    private updateChatWindow(messagesJson: string) {
+        if (messagesJson) {
+            this.messages = []
+            for (let msg of messagesJson) {
+                this.messages.push(new Message(msg['Sender'], msg['Body']));
+            }
+        }
     }
 }
