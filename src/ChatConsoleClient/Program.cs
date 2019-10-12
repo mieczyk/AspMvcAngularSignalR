@@ -13,7 +13,8 @@ namespace ChatConsoleClient
 
             server.Register(clientId, out string message);
 
-            server.Send("Hello world", clientId);
+            Console.ReadKey();
+            server.Send(new Message(clientId, "Hello World!"));
         }
     }
 }

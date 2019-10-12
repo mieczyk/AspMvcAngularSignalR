@@ -6,15 +6,14 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace ChatWebClient.Dispatcher
 {
     class Program
     {
         static readonly HttpClient _client = new HttpClient();
-        static readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
 
         static void Main(string[] args)
         {
@@ -30,12 +29,15 @@ namespace ChatWebClient.Dispatcher
 
                 while(true)
                 {
-                    IEnumerable<string> messages = 
+                    IEnumerable<Message> messages = 
                         chatServer.ReadAllMessagesForClient(MvcApplication.ClientId);
 
-                    PostMessagesToClient($"{webClientUri}/Chat/Messages", messages).GetAwaiter().GetResult();
+                    if (messages.Any())
+                    {
+                        PostMessagesToClient($"{webClientUri}/Chat/Messages", messages).GetAwaiter().GetResult();
 
-                    Console.WriteLine("[*] Posted {0} messages to the web client.", messages.Count());
+                        Console.WriteLine("[*] Posted {0} messages to the web client.", messages.Count());
+                    }
 
                     Thread.Sleep(2000);
                 }
@@ -56,10 +58,10 @@ namespace ChatWebClient.Dispatcher
             return response.IsSuccessStatusCode;
         }
 
-        static async Task PostMessagesToClient(string uri, IEnumerable<string> messages)
+        static async Task PostMessagesToClient(string uri, IEnumerable<Message> messages)
         {
             var body = new StringContent(
-                _serializer.Serialize(messages), 
+                JsonConvert.SerializeObject(new { messages }),
                 Encoding.UTF8, 
                 "application/json"
             );

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace ChatServer
 {
     public class Server : IDisposable
     {
-        private const string _separator = ":@:";
-
         private readonly MemoryMappedTextFile _clientsList;
         private readonly MemoryMappedTextFile _chatBuffer;
 
@@ -44,21 +41,12 @@ namespace ChatServer
             );
         }
 
-        public void Send(string message, string senderId, string recipientId = null)
+        public void Send(Message message)
         {
-            StringBuilder chatLine = new StringBuilder(senderId + _separator);
-
-            if(!string.IsNullOrWhiteSpace(recipientId))
-            {
-                chatLine.Append(recipientId + _separator);
-            }
-
-            chatLine.Append(message);
-
-            _chatBuffer.AppendText(chatLine + Environment.NewLine);
+            _chatBuffer.AppendText(message.ToString() + Environment.NewLine);
         }
 
-        public IEnumerable<string> ReadAllMessagesForClient(string clientId)
+        public IEnumerable<Message> ReadAllMessagesForClient(string clientId)
         {
             if(!GetRegisteredClients().Contains(clientId, StringComparer.CurrentCultureIgnoreCase))
             {
@@ -68,61 +56,15 @@ namespace ChatServer
             IEnumerable<Message> allChatMessages = _chatBuffer.ReadAllText().Split(
                 new[] { Environment.NewLine },
                 StringSplitOptions.RemoveEmptyEntries
-            ).Select(msg => Message.Parse(msg));
+            ).Select(msg => Message.ParseJson(msg));
 
-            var clientMessages = new List<string>(allChatMessages.Count());
-
-            foreach(Message msg in allChatMessages)
-            {
-                if(msg.IsAddressedTo(clientId))
-                {
-                    clientMessages.Add($"{msg.Sender}: {msg.Body}");
-                }
-            }
-
-            return clientMessages;
+            return allChatMessages.Where(msg => msg.IsAddressedTo(clientId));
         }
 
         public void Dispose()
         {
             _chatBuffer.Dispose();
             _clientsList.Dispose();
-        }
-
-        private class Message
-        {
-            public string Sender { get; }
-            public string Recipient { get; }
-            public string Body { get; }
-
-            private Message(string sender, string recipient, string body)
-            {
-                Sender = sender;
-                Recipient = recipient;
-                Body = body;
-            }
-
-            public bool IsAddressedTo(string clientId)
-            {
-                return string.IsNullOrWhiteSpace(Recipient) 
-                    || Recipient.Equals(clientId, StringComparison.InvariantCultureIgnoreCase);
-            }
-
-            public static Message Parse(string message)
-            {
-                string[] msgParts = message.Split(
-                    new[] { _separator }, 
-                    StringSplitOptions.None
-                );
-
-                bool isMessageDirect = msgParts.Length > 2;
-
-                return new Message(
-                    msgParts[0],
-                    isMessageDirect ? msgParts[1] : null,
-                    isMessageDirect ? msgParts[2] : msgParts[1]
-                );
-            }
         }
     }
 }
