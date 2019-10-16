@@ -4,7 +4,7 @@ import { SignalR, BroadcastEventListener } from 'ng2-signalr';
 import { Message } from './models/message.model';
 
 @Component({
-  selector: 'app-root',
+  selector: 'chat-window',
   templateUrl: './chat-window.component.html',
   styles: []
 })
