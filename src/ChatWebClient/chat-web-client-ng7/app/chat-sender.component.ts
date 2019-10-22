@@ -1,4 +1,5 @@
 ﻿import { Component } from '@angular/core';
+import { SignalR, SignalRConnection } from 'ng2-signalr';
 
 @Component({
     selector: 'chat-sender',
@@ -6,9 +7,11 @@
     styles: []
 })
 export class ChatSender {
-    public message: string;
+    constructor(private _signalR: SignalR) {}
 
     public sendMessage(message: string) {
-        this.message = message;
+        this._signalR.connect().then((connection) => {
+            connection.invoke('Send', message);
+        });
     }
 }

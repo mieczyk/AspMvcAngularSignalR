@@ -1,6 +1,4 @@
 ﻿<div class="form-group">
-    <input #box (keyup.enter)="sendMessage(box.value)" placeholder="Insert a message and hit Enter" class="form-control" style="border-radius: 6px" />
+    <input #box (keyup.enter)="sendMessage(box.value);box.value=''" placeholder="Insert a message and hit Enter" class="form-control" style="border-radius: 6px" />
 </div>
-
-<p>{{message}}</p>
     

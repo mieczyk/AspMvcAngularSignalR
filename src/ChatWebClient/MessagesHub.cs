@@ -18,5 +18,10 @@ namespace ChatWebClient
             // Check what other options we have
             _context.Clients.All.onMessagesReceived(messages);
         }
+
+        public void Send(string message)
+        {
+            MvcApplication.ChatServer.Send(new Message(MvcApplication.ClientId, message));
+        }
     }
 }
