@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SignalR, BroadcastEventListener } from 'ng2-signalr';
 
-import { Message } from './models/message.model';
+import { ReceivedMessage } from './models/message.model';
 
 @Component({
   selector: 'chat-window',
@@ -9,7 +9,7 @@ import { Message } from './models/message.model';
   styles: []
 })
 export class ChatWindow {
-    private messages: Message[];
+    private messages: ReceivedMessage[];
 
     constructor(private _signalR: SignalR) { }
 
@@ -29,7 +29,7 @@ export class ChatWindow {
         if (messagesJson) {
             this.messages = []
             for (let msg of messagesJson) {
-                this.messages.push(new Message(msg['Sender'], msg['Body']));
+                this.messages.push(new ReceivedMessage(msg['Sender'], msg['Body']));
             }
         }
     }
