@@ -1,5 +1,4 @@
-﻿using ChatServer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -22,11 +21,11 @@ namespace ChatWebClient.Controllers
         }
 
         [HttpPost]
-        public ActionResult Messages(IEnumerable<MessageViewModel> messages)
+        public ActionResult Messages(IEnumerable<MessageViewModel> msgViewModels)
         {
-            if(messages.Any())
+            if(msgViewModels.Any())
             {
-                _hub.Notify(messages.Select(msg => msg.ToMessage()));
+                _hub.Notify(msgViewModels.Select(msg => msg.ToMessage()));
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
