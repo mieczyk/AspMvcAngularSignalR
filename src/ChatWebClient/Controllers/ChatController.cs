@@ -21,11 +21,11 @@ namespace ChatWebClient.Controllers
         }
 
         [HttpPost]
-        public ActionResult Messages(IEnumerable<MessageViewModel> msgViewModels)
+        public ActionResult Messages(IEnumerable<MessageViewModel> messages)
         {
-            if(msgViewModels.Any())
+            if(messages.Any())
             {
-                _hub.Notify(msgViewModels.Select(msg => msg.ToMessage()));
+                _hub.Notify(messages.Select(msg => msg.ToMessage()));
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
