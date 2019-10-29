@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { SignalR, BroadcastEventListener } from 'ng2-signalr';
+import { BroadcastEventListener } from 'ng2-signalr';
 
+import { SignalRService } from './signalr.service';
 import { ReceivedMessage } from './models/message.model';
 
 @Component({
@@ -11,11 +12,11 @@ import { ReceivedMessage } from './models/message.model';
 export class ChatWindow {
     private messages: ReceivedMessage[];
 
-    constructor(private _signalR: SignalR) { }
+    constructor(private signalRService: SignalRService) { }
 
     ngOnInit() {
         this.messages = [];
-        this._signalR.connect().then((connection) => {
+        this.signalRService.getOpenConnection().then((connection) => {
             let onMessagesReceived = new BroadcastEventListener<string>('onMessagesReceived');
 
             connection.listen(onMessagesReceived);

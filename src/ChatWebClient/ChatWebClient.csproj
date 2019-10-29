@@ -198,6 +198,7 @@
     <TypeScriptCompile Include="chat-web-client-ng7\app\chat-window.component.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\app\app.module.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\app\models\message.model.ts" />
+    <TypeScriptCompile Include="chat-web-client-ng7\app\signalr.service.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\environments\environment.prod.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\environments\environment.ts" />
     <TypeScriptCompile Include="chat-web-client-ng7\main.ts" />
