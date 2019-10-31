@@ -5,16 +5,30 @@ namespace ChatConsoleClient
 {
     class Program
     {
+        private const string ClientId = "ConsoleClient";
+
         static void Main(string[] args)
         {
-            const string clientId = "ConsoleClient";
+            using (var server = new Server())
+            {
+                if (!server.Register(ClientId, out string message))
+                {
+                    Console.WriteLine($"Could not register {ClientId} at the chat server.");
+                    Console.WriteLine(message);
 
-            var server = new Server();
+                    return;
+                }
 
-            server.Register(clientId, out string message);
+                string msgBody = string.Empty;
 
-            Console.ReadKey();
-            server.Send(new Message(clientId, "Hello World!"));
+                while(!msgBody.Equals("/exit", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Console.Write($"{ClientId}: ");
+                    msgBody = Console.ReadLine();
+
+                    server.Send(new Message(ClientId, msgBody, msgBody.TryExtractRecipient()));
+                }
+            }
         }
     }
 }
