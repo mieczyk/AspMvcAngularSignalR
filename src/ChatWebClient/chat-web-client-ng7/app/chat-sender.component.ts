@@ -1,7 +1,6 @@
 ﻿import { Component } from '@angular/core';
 
 import { SignalRService } from './signalr.service';
-import { SentMessage } from './models/message.model';
 
 @Component({
     selector: 'chat-sender',
@@ -12,11 +11,9 @@ export class ChatSender {
     constructor(private signalRService: SignalRService) {}
 
     public sendMessage(messageString: string) {
-        let message = SentMessage.fromString(messageString);
-
-        if (!message.isEmpty()) {
+        if (messageString) {
             this.signalRService.getOpenConnection().then((connection) => {
-                connection.invoke('Send', message);
+                connection.invoke('Send', messageString);
             });
         }
     }

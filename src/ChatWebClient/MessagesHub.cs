@@ -15,15 +15,19 @@ namespace ChatWebClient
 
         public void Notify(IEnumerable<Message> messages)
         {
-            // Check what other options we have
+            // TODO: Check what other options we have
             _context.Clients.All.onMessagesReceived(messages);
         }
 
-        public void Send(MessageViewModel msgViewModel)
+        public void Send(string messageString)
         {
-            msgViewModel.Sender = MvcApplication.ClientId;
+            var message = new Message(
+                MvcApplication.ClientId,
+                messageString,
+                messageString.TryExtractRecipient()
+            );
 
-            MvcApplication.ChatServer.Send(msgViewModel.ToMessage());
+            MvcApplication.ChatServer.Send(message);
         }
     }
 }
