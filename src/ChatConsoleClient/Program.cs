@@ -1,13 +1,25 @@
 ﻿using ChatServer;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace ChatConsoleClient
 {
     class Program
     {
-        private const string ClientId = "ConsoleClient";
+        const string ClientId = "ConsoleClient";
 
-        static void Main(string[] args)
+        SynchronizedCollection<char> _msgBody;
+        IEnumerable<Message> _allMessages;
+
+        internal Program()
+        {
+            _msgBody = new SynchronizedCollection<char>();
+            _allMessages = new List<Message>();
+        }
+
+        void Run()
         {
             using (var server = new Server())
             {
@@ -19,16 +31,95 @@ namespace ChatConsoleClient
                     return;
                 }
 
-                string msgBody = string.Empty;
+                var msgBodyString = string.Empty;
+                bool listenForNewMessages = true;
 
-                while(!msgBody.Equals("/exit", StringComparison.InvariantCultureIgnoreCase))
+                // Check if new messages came.
+                Task listenerTask = Task.Factory.StartNew(() =>
                 {
-                    Console.Write($"{ClientId}: ");
-                    msgBody = Console.ReadLine();
+                    while (listenForNewMessages)
+                    {
+                        IEnumerable<Message> newMessages = server.ReadAllMessagesForClient(ClientId);
 
-                    server.Send(new Message(ClientId, msgBody, msgBody.TryExtractRecipient()));
+                        if (newMessages.Count() > _allMessages.Count())
+                        {
+                            _allMessages = newMessages;
+                            RefreshWindow();
+                        }
+
+                        Task.Delay(1000).Wait();
+                    }
+                });
+
+                while (!msgBodyString.Equals("/exit", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    RefreshWindow();
+
+                    // Read message char by char until ENTER is pressed.
+                    while (true)
+                    {
+                        char readChar = Console.ReadKey().KeyChar;
+
+                        // RETURN (ENTER)
+                        if (readChar == (char)13)
+                        {
+                            break;
+                        }
+
+                        // BACKSPACE
+                        if (readChar == (char)8)
+                        {
+                            if (_msgBody.Any())
+                            {
+                                _msgBody.RemoveAt(_msgBody.Count - 1);
+                            }
+
+                            continue;
+                        }
+
+                        _msgBody.Add(readChar);
+                    }
+
+                    msgBodyString = new string(_msgBody.ToArray());
+                    _msgBody.Clear();
+                    Console.Clear();
+
+                    if (!msgBodyString.IsEmpty())
+                    {
+                        server.Send(new Message(
+                            ClientId, 
+                            msgBodyString, 
+                            msgBodyString.TryExtractRecipient()
+                        ));
+                    }
                 }
+
+                listenForNewMessages = false;
+                listenerTask.Wait();
             }
+        }
+
+        void RefreshWindow()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 0);
+
+            foreach(Message msg in _allMessages)
+            {
+                Console.WriteLine($"{msg.Sender}: {msg.Body}");
+            }
+            Console.WriteLine(new string('=', Console.BufferWidth));
+
+            Console.Write($"{ClientId}: ");
+            foreach(char character in _msgBody)
+            {
+                Console.Write(character);
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            new Program().Run();
         }
     }
 }
