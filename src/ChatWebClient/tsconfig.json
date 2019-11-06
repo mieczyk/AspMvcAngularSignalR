@@ -1,5 +1,5 @@
 {
-  "compileOnSave": true,
+  "compileOnSave": false,
   "include": ["./chat-web-client-ng7"],
   "compilerOptions": {
     "baseUrl": "./",

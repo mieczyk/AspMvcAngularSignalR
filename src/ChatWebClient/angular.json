@@ -35,7 +35,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "Scripts/libs",
+            "outputPath": "Scripts/out-ng",
             "index": "chat-web-client-ng7/index.html",
             "main": "chat-web-client-ng7/main.ts",
             "polyfills": "chat-web-client-ng7/polyfills.ts",

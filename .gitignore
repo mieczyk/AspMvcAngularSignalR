@@ -13,3 +13,4 @@ packages/
 # Angular 7
 node_modules
 out-tsc/
+out-ng/
