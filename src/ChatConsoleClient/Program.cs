@@ -74,6 +74,8 @@ namespace ChatConsoleClient
                                 _msgBody.RemoveAt(_msgBody.Count - 1);
                             }
 
+                            RefreshWindow();
+                            
                             continue;
                         }
 
