@@ -20,7 +20,6 @@ export function createSignalRConfig(): SignalRConfiguration {
       BrowserModule,
       SignalRModule.forRoot(createSignalRConfig)
   ],
-  providers: [],
   bootstrap: [ChatWindow, ChatSender]
 })
 export class AppModule { }
