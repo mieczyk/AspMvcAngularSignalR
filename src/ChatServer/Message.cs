@@ -22,6 +22,11 @@ namespace ChatServer
                 || Recipient.Equals(clientId, StringComparison.InvariantCultureIgnoreCase);
         }
 
+        public bool IsSentBy(string clientId)
+        {
+            return Sender.Equals(clientId, StringComparison.InvariantCultureIgnoreCase);
+        }
+
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);

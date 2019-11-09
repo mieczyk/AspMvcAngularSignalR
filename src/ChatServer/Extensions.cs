@@ -40,7 +40,7 @@ namespace ChatServer
         {
             string recipient = null;
 
-            if(!@this.IsEmpty() && @this.StartsWith("@"))
+            if(!@this.IsEmpty() && @this.TrimStart().StartsWith("@"))
             {
                 var recipientRegEx = new Regex(@"@(\w+):");
                 var match = recipientRegEx.Match(@this.TrimStart());

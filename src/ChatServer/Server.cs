@@ -9,10 +9,14 @@ namespace ChatServer
         private readonly MemoryMappedTextFile _clientsList;
         private readonly MemoryMappedTextFile _chatBuffer;
 
-        public Server()
+        public Server(string clientListName, string chatBufferName)
         {
-            _clientsList = new MemoryMappedTextFile("ClientsListFile", 2048);
-            _chatBuffer = new MemoryMappedTextFile("ChatBufferFile", 4096);
+            _clientsList = new MemoryMappedTextFile(clientListName, 2048);
+            _chatBuffer = new MemoryMappedTextFile(chatBufferName, 4096);
+        }
+
+        public Server() : this("ClientsListFile", "ChatBufferFile")
+        {           
         }
 
         public bool Register(string clientId, out string message)
@@ -58,7 +62,9 @@ namespace ChatServer
                 StringSplitOptions.RemoveEmptyEntries
             ).Select(msg => Message.ParseJson(msg));
 
-            return allChatMessages.Where(msg => msg.IsAddressedTo(clientId));
+            return allChatMessages.Where(
+                msg => msg.IsAddressedTo(clientId) || msg.IsSentBy(clientId)
+            );
         }
 
         public void Dispose()

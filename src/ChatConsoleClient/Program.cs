@@ -8,13 +8,13 @@ namespace ChatConsoleClient
 {
     class Program
     {
-        const string ClientId = "ConsoleClient";
-
+        readonly string _clientId;
         SynchronizedCollection<char> _msgBody;
         IEnumerable<Message> _allMessages;
 
-        internal Program()
+        internal Program(string clientId)
         {
+            _clientId = clientId;
             _msgBody = new SynchronizedCollection<char>();
             _allMessages = new List<Message>();
         }
@@ -23,9 +23,9 @@ namespace ChatConsoleClient
         {
             using (var server = new Server())
             {
-                if (!server.Register(ClientId, out string message))
+                if (!server.Register(_clientId, out string message))
                 {
-                    Console.WriteLine($"Could not register {ClientId} at the chat server.");
+                    Console.WriteLine($"Could not register {_clientId} at the chat server.");
                     Console.WriteLine(message);
 
                     return;
@@ -39,7 +39,7 @@ namespace ChatConsoleClient
                 {
                     while (listenForNewMessages)
                     {
-                        IEnumerable<Message> newMessages = server.ReadAllMessagesForClient(ClientId);
+                        IEnumerable<Message> newMessages = server.ReadAllMessagesForClient(_clientId);
 
                         if (newMessages.Count() > _allMessages.Count())
                         {
@@ -89,7 +89,7 @@ namespace ChatConsoleClient
                     if (!msgBodyString.IsEmpty())
                     {
                         server.Send(new Message(
-                            ClientId, 
+                            _clientId, 
                             msgBodyString, 
                             msgBodyString.TryExtractRecipient()
                         ));
@@ -106,13 +106,16 @@ namespace ChatConsoleClient
             Console.Clear();
             Console.SetCursorPosition(0, 0);
 
-            foreach(Message msg in _allMessages)
+            Console.WriteLine($"Welcome {_clientId}!");
+            Console.WriteLine(new string('=', Console.BufferWidth));
+
+            foreach (Message msg in _allMessages)
             {
                 Console.WriteLine($"{msg.Sender}: {msg.Body}");
             }
             Console.WriteLine(new string('=', Console.BufferWidth));
 
-            Console.Write($"{ClientId}: ");
+            Console.Write($"{_clientId}: ");
             foreach(char character in _msgBody)
             {
                 Console.Write(character);
@@ -121,7 +124,13 @@ namespace ChatConsoleClient
 
         static void Main(string[] args)
         {
-            new Program().Run();
+            if(args.Length < 1)
+            {
+                Console.WriteLine("Client ID required as a parameter.");
+                return;
+            }
+
+            new Program(args[0]).Run();
         }
     }
 }

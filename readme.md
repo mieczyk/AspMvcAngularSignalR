@@ -13,3 +13,11 @@
 * remove-node-modules (npm package)
 *  ng new chat-web-client-ng7 --minimal --skip-tests --skip-git
 * run the command `ng build –watch` to compile Angular code automatically. The compiler runs in background and listens for changes in code.
+
+
+* Run xUnit tests with xunit.runner.console:
+	packages\xunit.runner.console.2.4.1\tools\net461\xunit.console.exe tests\ChatServer.Tests\bin\Debug\ChatServer.Tests.dll
+OR install xunit.runner.visualstudio NuGet package to run xUnit tests in Visual Studio IDE.
+
+* Remember that memory mapped files are identified by their names. So, even if you create a new Server
+instance, but the underlying file names will not be changed, you work with the same memory mapped file!
