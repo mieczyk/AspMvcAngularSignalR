@@ -25,6 +25,11 @@ namespace ChatServer
             return @this?.IndexOf(substring, comparison) >= 0; 
         }
 
+        /// <summary>
+        /// Wrapper for string.IsNullOrWhiteSpace(string) method.
+        /// </summary>
+        /// <param name="this">String that is tested.</param>
+        /// <returns>True if input string is empty (null or whitespace).</returns>
         public static bool IsEmpty(this string @this)
         {
             return string.IsNullOrWhiteSpace(@this);
