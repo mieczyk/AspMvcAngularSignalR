@@ -25,12 +25,18 @@ namespace ChatWebClient.Dispatcher
             {
                 Console.WriteLine("[*] The host is up and running.");
 
+                Console.WriteLine("[*] Getting the Client ID...");
+
+                string clientId = _client.GetStringAsync($"{webClientUri}/Chat/ClientId")
+                        .GetAwaiter()
+                        .GetResult();
+
                 var chatServer = new Server();
 
                 while(true)
                 {
                     IEnumerable<Message> messages = 
-                        chatServer.ReadAllMessagesForClient(MvcApplication.ClientId);
+                        chatServer.ReadAllMessagesForClient(clientId);
 
                     if (messages.Any())
                     {

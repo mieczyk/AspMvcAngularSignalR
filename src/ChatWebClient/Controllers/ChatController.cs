@@ -20,6 +20,12 @@ namespace ChatWebClient.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult ClientId()
+        {
+            return Content(MvcApplication.ClientId);
+        }
+
         [HttpPost]
         public ActionResult Messages(IEnumerable<MessageViewModel> messages)
         {
