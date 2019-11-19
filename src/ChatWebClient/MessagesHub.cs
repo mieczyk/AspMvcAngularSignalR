@@ -15,7 +15,6 @@ namespace ChatWebClient
 
         public void Notify(IEnumerable<Message> messages)
         {
-            // TODO: Check what other options we have
             _context.Clients.All.onMessagesReceived(messages);
         }
 
