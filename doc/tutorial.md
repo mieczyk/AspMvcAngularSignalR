@@ -27,7 +27,7 @@ is already set up. If not, please read one of the following articles:
 **The tutorial assumes that the example solution is built on .NET Framework 4.6.1, but 
 it should work with the higher versions as well.**
 
-### 1. Install Microsoft.AspNet.SignalR NuGet package
+### 1) Install Microsoft.AspNet.SignalR NuGet package
 
 Once the scaffolding is ready, install the **Microsof.AspNet.SignalR** NuGet package, 
 in the ASP.NET MVC project (_ChatWebClient_ in this example):
@@ -70,12 +70,85 @@ There are two more items that have been added to the project:
 They are very important for the SignalR communication, but we'll get back to it
 in a minute.
 
+### 2) Set up the SingalR Hub
+
+What is the *Hub*? Let me quote the official 
+[SignalR Hubs API Guide](https://docs.microsoft.com/en-us/aspnet/signalr/overview/guide-to-the-api/hubs-api-guide-server):
+
+---
+The SignalR Hubs API enables you to make remote procedure calls (RPCs) from a server to connected clients and from 
+clients to the server. In server code, you define methods that can be called by clients, and you call methods that 
+run on the client. In client code, you define methods that can be called from the server, and you call methods that 
+run on the server.
+
+---
+
+Let's add one, named `MessagesHub`, to the _ChatWebClient_ project:
+
+```
+using Microsoft.AspNet.SignalR;
+
+namespace ChatWebClient
+{
+    public class MessagesHub : Hub
+    {
+        private readonly IHubContext _context;
+
+        public MessagesHub()
+        {
+            _context = GlobalHost.ConnectionManager.GetHubContext<MessagesHub>();
+        }
+
+        public void Notify(string message)
+        {
+            _context.Clients.All.onMessagesReceived(message);
+        }
+    }
+}
+```
+
+The class provided above contains the minimum necessary to set up the SignalR hub
+and establish the real-time communication between the client and server. 
+
+The `Notify(string message)` method's job is to notify all clients that are currently 
+connected to the hub about a message. Please, note the `onMessagesReceived(messages)` 
+method is called on the `dynamic` object. Actually, you can give the method any name 
+you want, as the mentioned call executes the function, with the exact same name, 
+on the client side. We'll get back to it soon.
+
+Now, it's time to start the hub with OWIN. Let's define the `Startup` class within 
+the ASP.NET MVC projcet, in the `Startup.cs` source file:
+
+```
+using Owin;
+using Microsoft.Owin;
+
+[assembly: OwinStartup(typeof(ChatWebClient.Startup))]
+
+namespace ChatWebClient
+{
+    public class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            app.MapSignalR();
+        }
+    }
+}
+```
+
+The `app.MapSignalR()` call defines the route that clients will use to connect to the hub.
+That's it. We have the SignalR hub set up and now it's time to use it.
+
+### 3) Send a message from the server
 
 
-1) SignalR 2 NuGet package
-1) ng2-signalR
+
 
 References:
 
 * SignalR home page
 * https://stackoverflow.com/questions/26273700/signalr-without-owin
+* https://docs.microsoft.com/en-us/aspnet/signalr/overview/getting-started/tutorial-getting-started-with-signalr-and-mvc
+* https://github.com/aspnet/SignalR/blob/master/specs/HubProtocol.md
+* https://www.quora.com/What-is-the-difference-between-web-sockets-and-signalR
