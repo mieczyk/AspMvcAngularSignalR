@@ -142,6 +142,70 @@ That's it. We have the SignalR hub set up and now it's time to use it.
 
 ### 3) Send a message from the server
 
+Assuming that the ASP.NET MVC routing is already confifured in the `App_Start/RouteConfig.cs`
+file, for example:
+
+```
+using System.Web.Mvc;
+using System.Web.Routing;
+
+namespace ChatWebClient
+{
+    public class RouteConfig
+    {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Chat", action = "Index", id = UrlParameter.Optional }
+            );
+        }
+    }
+}
+```
+
+we can add a controller action that dispatches a message through the SignalR hub:
+
+```
+using System.Net;
+using System.Web.Mvc;
+
+namespace ChatWebClient.Controllers
+{
+    public class ChatController : Controller
+    {
+        private readonly MessagesHub _hub;
+
+        public ChatController()
+        {
+            _hub = new MessagesHub();
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Send(string message)
+        {
+            if(!string.IsNullOrWhiteSpace(message))
+            {
+                _hub.Notify(message);
+            }
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+    }
+}
+```
+
+Now, we can POST any message to `http://<HOST_URL>/Chat/Send` and the message will be dispatched
+to all SignalR clients that are currently connected. However, please note that we have no
+client connected, yet. So, even if we call the controller's action, nothing happens. It's
+time to add the SignalR client.
 
 
 
