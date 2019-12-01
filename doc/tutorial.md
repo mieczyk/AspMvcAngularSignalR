@@ -207,7 +207,108 @@ to all SignalR clients that are currently connected. However, please note that w
 client connected, yet. So, even if we call the controller's action, nothing happens. It's
 time to add the SignalR client.
 
+### 4) Install ng2-signalr NPM package in Angular application
 
+To install the [ng2-signalr](https://github.com/HNeukermans/ng2-signalr) NPM package, append the dependency: 
+
+```
+"ng2-signalr": "~8.0.2"
+```
+
+to the `package.json` file and run the `npm install` command within the directory, the `package.json`
+file resides. 
+
+You may wonder why we didn't use the `@aspnet/signalr` package. Well, that's because this package
+is meant for communicating with ASP.NET Core and we use ASP.NET MVC on the server side.
+
+You may also get the follow warnings, while installing NPM packages:
+
+```
+ng2-signalr@8.0.2 requires a peer of @angular/common@^8.0.3 but none is installed. You must install peer dependencies yourself.
+npm WARN ng2-signalr@8.0.2 requires a peer of @angular/core@^8.0.3 but none is installed. You must install peer dependencies yourself.
+```
+
+but don't worry. The communication will work anyway. However, if it bothers you, 
+downgrade the `ng2-signalr` package version or use Angular 8.
+
+The next step is to add the configuration inside the `app.module.ts` file:
+
+```
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { SignalRModule, SignalRConfiguration } from 'ng2-signalr';
+
+import { ChatWindow } from './chat-window.component';
+
+export function createSignalRConfig(): SignalRConfiguration {
+    const config = new SignalRConfiguration();
+    config.hubName = 'messagesHub';
+    return config;
+}
+
+@NgModule({
+  declarations: [
+    ChatWindow
+  ],
+  imports: [
+      BrowserModule,
+      SignalRModule.forRoot(createSignalRConfig)
+  ],
+  providers: [],
+  bootstrap: [ChatWindow]
+})
+
+export class AppModule { }
+```
+
+First, import the necessary classes from the `ng2-signalr` module:
+
+```
+import { SignalRModule, SignalRConfiguration } from 'ng2-signalr';
+```
+
+Second, define the function that creates and returns the most basic 
+SignalR configuration possible:
+
+```
+export function createSignalRConfig(): SignalRConfiguration {
+    const config = new SignalRConfiguration();
+    config.hubName = 'messagesHub';
+    return config;
+}
+
+```
+
+Please note that we need to set the `hubName` property to the name we
+used while creating the SignalR hub on the server side, but using the
+_camelCase_ name this time.
+
+Finally, import the `SignalRModule` with the custom configuration, within
+the `@NgModule` decorator:
+
+```
+@NgModule({
+  imports: [
+    SignalRModule.forRoot(createSignalRConfig)
+  ]
+})
+
+```
+
+If you'd like to know more about the `SignalRModule` configuration, please visit:
+https://github.com/HNeukermans/ng2-signalr#setup.
+
+There's one more thing left. Do you remember the jQuery files that were added
+to the project while installing the SignalR NuGet package? It's time to include
+one of them in the page's scripts section. For example, directly in the `_Layout.cshtml`
+template:
+
+```
+<script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+```
+
+This is the minimized version, but you may want include the full version 
+in order to make the debugging process easier. 
 
 References:
 
