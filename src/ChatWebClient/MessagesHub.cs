@@ -13,7 +13,7 @@ namespace ChatWebClient
 
         public void Notify(string message)
         {
-            _context.Clients.All.onMessagesReceived(message);
+            _context.Clients.All.onMessageReceived(message);
         }
     }
 

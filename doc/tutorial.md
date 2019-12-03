@@ -101,7 +101,7 @@ namespace ChatWebClient
 
         public void Notify(string message)
         {
-            _context.Clients.All.onMessagesReceived(message);
+            _context.Clients.All.onMessageReceived(message);
         }
     }
 }
@@ -111,7 +111,7 @@ The class provided above contains the minimum necessary to set up the SignalR hu
 and establish the real-time communication between the client and server. 
 
 The `Notify(string message)` method's job is to notify all clients that are currently 
-connected to the hub about a message. Please, note the `onMessagesReceived(messages)` 
+connected to the hub about a message. Please, note the `onMessageReceived(messages)` 
 method is called on the `dynamic` object. Actually, you can give the method any name 
 you want, as the mentioned call executes the function, with the exact same name, 
 on the client side. We'll get back to it soon.
@@ -307,8 +307,106 @@ template:
 <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
 ```
 
-This is the minimized version, but you may want include the full version 
-in order to make the debugging process easier. 
+This is the minimized version, but you may want include the full version of the
+script, in order to make the debugging process easier. 
+
+### 5) Establish a connection between the client and the server
+
+Finally, let's connect to the hub in order to listen for new messages.
+We'll do it in the `ChatWindow` angular component:
+
+```
+import { Component } from '@angular/core';
+import { SignalR, BroadcastEventListener } from 'ng2-signalr';
+
+@Component({
+  selector: 'chat-window',
+  templateUrl: './chat-window.component.html',
+
+})
+export class ChatWindow {
+    messages: string[];
+
+    constructor(private _signalR: SignalR) { }
+
+    ngOnInit() {
+        this.messages = [];
+
+        this._signalR.connect().then((connection) => {
+            let onMessageReceived = new BroadcastEventListener<string>('onMessageReceived');
+
+            connection.listen(onMessageReceived);
+
+            onMessageReceived.subscribe((message: string) => {
+                this.messages.push(message);
+            });
+        });
+    }
+}
+```
+
+Before we get to the SignalR part, let's talk about the component itself, for
+a second. Somwehere, in the _Index_ view, the `chat-window` selector is required
+to display the component in a web browser:
+
+```
+@{
+    ViewBag.Title = "Chat Web Client";
+}
+
+<h2>Chat Web Client</h2>
+
+<chat-window></chat-window>
+```
+
+The component's template, defined in the `chat-window.component.html` file, looks
+as follows:
+
+```
+<div class="container img-rounded pre-scrollable" style="border: 1px solid #CFDCE6; padding: 10px">
+    <div *ngFor="let msg of messages">
+        <strong>{{msg}}</strong>
+    </div>
+</div>
+```
+
+Now, the SignalR part. As you can see, the `ChatWindow` component accepts the `SignalR`
+instance in the constructor. It's used to establish a new SignalR connection, within
+the `ngOnInit()` hook:
+
+```
+this._signalR.connect().then((connection) => {
+    let onMessageReceived = new BroadcastEventListener<string>('onMessageReceived');
+
+    connection.listen(onMessageReceived);
+
+    onMessageReceived.subscribe((message: string) => {
+        this.messages.push(message);
+    });
+ });
+
+```
+
+This part is responsible for connecting to the hub, defined earlier in the configuration,
+and setting up a listener for a new message. Do you remember when I said about the 
+method name definition, on the dynamic object, while implementing the hub? Please note
+that the exact same name is used for creating the client's listener (_onMessageReceived_):
+
+```
+new BroadcastEventListener<string>('onMessageReceived');
+```
+
+This is extremely important. If the names mismatch, the communication will not work
+and you'll get no error informing you about the issue. Hence, if the SignalR communication
+dosn't work and you have no idea why, first, check if the server's and client's method names
+match.
+
+That's basically it. Now, the server is able to send the real-time notifications to the
+client and a new message appears immediately on the page, without hitting the refresh
+button and without active polling. You can see it yourself. Just build and run the 
+solution (remember about the `ng build` as well) and POST a new message, using the
+the `http://<HOST_URL>/Chat/Send` request. Awesome, isn't it?
+
 
 References:
 
