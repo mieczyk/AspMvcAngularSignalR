@@ -124,7 +124,7 @@ The other concepts worth mentioning:
 
 # References
 
-* [ng2-signalr ong GitHub](https://github.com/HNeukermans/ng2-signalr)
+* [ng2-signalr on GitHub](https://github.com/HNeukermans/ng2-signalr)
 * [Using Angular 8 in ASP.NET MVC 5 with Angular CLI and Visual Studio 2017](https://www.mithunvp.com/angular-asp-net-mvc-5-angular-cli-visual-studio-2017)
 * [Build a Basic Website with ASP.NET MVC and Angular](https://developer.okta.com/blog/2018/12/21/build-basic-web-app-with-mvc-angular)
 * [Memory-Mapped Files](https://docs.microsoft.com/en-us/dotnet/standard/io/memory-mapped-files)
